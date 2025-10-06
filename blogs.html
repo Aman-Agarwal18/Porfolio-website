@@ -1,0 +1,223 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Blogs | Aman Agarwal</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+
+    <style>
+      /* Blog Management Custom Styling */
+      .blog-form {
+        background: #fff;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      }
+      .blog-form input,
+      .blog-form textarea {
+        width: 100%;
+        margin-bottom: 1rem;
+        padding: 0.6rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+      .blog-card {
+        background: #fff;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        box-shadow: 0 0 10px rgba(0,0,0,0.08);
+      }
+      .blog-card h3 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.3rem;
+      }
+      .delete-btn {
+        background: #ff4d4d;
+        color: white;
+        border: none;
+        padding: 0.3rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        cursor: pointer;
+      }
+      .delete-btn:hover {
+        background: #d93636;
+      }
+    </style>
+  </head>
+
+  <body class="right-sidebar is-preload">
+    <div id="page-wrapper">
+
+      <!-- Header -->
+      <div id="header-wrapper">
+        <div class="container">
+          <header id="header">
+            <div class="inner">
+              <h1><a href="index.html" id="logo">Aman Agarwal</a></h1>
+              <nav id="nav">
+                <ul>
+                  <li><a href="index.html">Home</a></li>
+                  <li><a href="projects.html">Projects</a></li>
+                  <li><a href="skills.html">Skills</a></li>
+                  <li class="current_page_item"><a href="blogs.html">Blogs</a></li>
+                  <li><a href="contact.html">Contact</a></li>
+                </ul>
+              </nav>
+            </div>
+          </header>
+        </div>
+      </div>
+
+      <!-- Main -->
+      <div id="main-wrapper">
+        <div class="wrapper style2">
+          <div class="inner">
+            <div class="container">
+              <div class="row">
+
+                <!-- Content: Blog List -->
+                <div class="col-8 col-12-medium">
+                  <section id="main">
+                    <header class="major special">
+                      <h2>My Blogs</h2>
+                      <p>Stories, insights, and learnings from my journey in AI, ML, and Data Science.</p>
+                    </header>
+
+                    <div id="blog-list"></div>
+                  </section>
+                </div>
+
+                <!-- Sidebar: Add Blog -->
+                <div class="col-4 col-12-medium">
+                  <section class="blog-form">
+                    <header class="major">
+                      <h2>Add New Blog</h2>
+                    </header>
+
+                    <input type="text" id="blog-title" placeholder="Blog Title" required />
+                    <textarea id="blog-content" placeholder="Blog Summary / Description" rows="4" required></textarea>
+                    <input type="text" id="blog-link" placeholder="Full Blog Link (optional)" />
+                    <button id="save-blog" class="button primary small">+ Add Blog</button>
+                  </section>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div id="footer-wrapper">
+        <footer id="footer" class="container">
+          <div class="row">
+            <div class="col-12">
+              <section>
+                <h2>Get in Touch</h2>
+                <ul class="contact">
+                  <li><strong>Email:</strong> <a href="mailto:amanagarwal20202098@gmail.com">amanagarwal20202098@gmail.com</a></li>
+                  <li><strong>GitHub:</strong> <a href="https://github.com/Aman-Agarwal18" target="_blank">Aman-Agarwal18</a></li>
+                  <li><strong>LinkedIn:</strong> <a href="https://linkedin.com/in/amanagarwal18" target="_blank">linkedin.com/in/amanagarwal18</a></li>
+                </ul>
+              </section>
+            </div>
+            <div class="col-12">
+              <div id="copyright">
+                <ul class="menu">
+                  <li>&copy; 2025 Aman Agarwal. All rights reserved.</li>
+                  <li>Design: <a href="https://html5up.net">HTML5 UP (ZeroFour)</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.dropotron.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <!-- Dynamic Blog Script -->
+    <script>
+      let blogs = JSON.parse(localStorage.getItem("blogs")) || [];
+
+      const blogList = document.getElementById("blog-list");
+      const saveBtn = document.getElementById("save-blog");
+
+      // Render all blogs
+      function renderBlogs() {
+        blogList.innerHTML = "";
+        if (blogs.length === 0) {
+          blogList.innerHTML = "<p>No blogs added yet.</p>";
+          return;
+        }
+
+        blogs.forEach((b, i) => {
+          blogList.innerHTML += `
+            <div class="blog-card">
+              <h3>${b.title}
+                <button class="delete-btn" onclick="deleteBlog(${i})">🗑</button>
+              </h3>
+              <p>${b.content}</p>
+              <p><small>Posted on: ${b.date}</small></p>
+              ${b.link ? `<a href="${b.link}" target="_blank" class="button small">Read Full Blog</a>` : ""}
+            </div>
+          `;
+        });
+      }
+
+      // Add new blog
+      function addBlog(title, content, link) {
+        const newBlog = {
+          title,
+          content,
+          link,
+          date: new Date().toLocaleString()
+        };
+        blogs.unshift(newBlog); // newest first
+        localStorage.setItem("blogs", JSON.stringify(blogs));
+        renderBlogs();
+      }
+
+      // Delete blog
+      function deleteBlog(index) {
+        if (confirm("Delete this blog?")) {
+          blogs.splice(index, 1);
+          localStorage.setItem("blogs", JSON.stringify(blogs));
+          renderBlogs();
+        }
+      }
+
+      // Add button click
+      saveBtn.addEventListener("click", () => {
+        const title = document.getElementById("blog-title").value.trim();
+        const content = document.getElementById("blog-content").value.trim();
+        const link = document.getElementById("blog-link").value.trim();
+
+        if (!title || !content) {
+          alert("Please fill in the blog title and content.");
+          return;
+        }
+
+        addBlog(title, content, link);
+
+        // Clear form
+        document.getElementById("blog-title").value = "";
+        document.getElementById("blog-content").value = "";
+        document.getElementById("blog-link").value = "";
+      });
+
+      renderBlogs();
+    </script>
+  </body>
+</html>
